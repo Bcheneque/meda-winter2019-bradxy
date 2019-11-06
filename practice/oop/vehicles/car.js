@@ -11,9 +11,19 @@ const Car = class Car extends Vehicle {
     }
 
      travel(miles) {
+
+        if (this.currentFuel <= 0) {
+
+            if(this.currentFuel * this.MPG >= miles) {
         this.currentFuel  = this.currentFuel - (miles/ this.MPG);
-        console.log("The" + this.make + this.model + " has " + this.currentFuel.toFixed(1) + " gallons of" + this.engineType + " left.");
+        console.log("The" + this.make + this.model + " has " + this.currentFuel.toFixed(1) + " gallons of" + this.engineType + " left."); 
+            }else {
+                console.log("The " + this.make + " " + this.model + "doesn't have enough fuel to travel that far.");
+            }
+     }  else {
+         console.log("The " + this.make + " " + this.model + "has no gas.");
      }
+        }   
 }
 
 module.exports = Car;
