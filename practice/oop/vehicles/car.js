@@ -12,7 +12,7 @@ const Car = class Car extends Vehicle {
 
      travel(miles) {
 
-        if (this.currentFuel <= 0) {
+        if (this.currentFuel <= 12) {
 
             if(this.currentFuel * this.MPG >= miles) {
         this.currentFuel  = this.currentFuel - (miles/ this.MPG);
@@ -23,7 +23,30 @@ const Car = class Car extends Vehicle {
      }  else {
          console.log("The " + this.make + " " + this.model + "has no gas.");
      }
-        }   
-}
+        } 
+
+        refuel(gallons) {
+
+            if(gallons <=0) {
+            console.log("You need to provide fuel(positivenumber).");
+            return 1;
+              
+            } else {
+                if (gallons >= this.tankSize) {
+                    console.log("You provided too much fuel, cannot fit into tank.");
+                } else {
+
+                    if(this.tankSize - this.currentFuel < gallons) {
+                        console.log("There is not enough free space in the fuel tank to add that many gallons.");
+                    } else {
+                        this.currentFuel = this.currentFuel + gallons;
+                        console.log(this.model + " was successfully refueled with " + gallons + " gallons of gas.");
+                    };
+
+                }
+                }
+            }
+        }  
+
 
 module.exports = Car;
