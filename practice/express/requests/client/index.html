@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="eng">
+ <head>
+     <meta charset = "UTF-8">
+        
+     <title>Submit your comment!</title>
+
+     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            background-color:lavenderblush;
+        }
+    </style>
+</head>
+ <body>
+
+    <h1>Comment Submission Form</h1>
+     <h2>Form</h2>
+     <ol>
+         <li>Fill the form.</li>
+         <li>Instructions.</li>
+     </ol>
+     <form id="commentSubmission">
+         <label for ="fname">First Name</label><br />
+         <input name ="fname" id="fname" type="text"/><br />
+         <label for = "lname">Last Name</label><br />
+         <input name ="lname" id="lname" type="text"/><br />
+         <label for="email">eMail</label><br />
+         <input name = "email" id= "email" type="text"/><br />
+         <label for ="age">Age</label><br />
+         <input name="age" id= "age" type="number"/><br />
+         <label for ="comment">Your Comments</label><br />
+         <textarea cols="80" rows="20" id="comment"></textarea><br />
+          </form>
+          <input form="commentSubmission" type="reset" value="Reset" />
+         <button id="submit">Submit</button>
+
+     <script>
+          $(document).ready(() => {
+
+            $("#submit").click(() =>{
+                //This listens to the submit button and the user presses on it to comfirm they are done and would like to submit to the server.
+
+            let data = {
+                message: $("#comment").val(),
+                firstName: $("#fname").val(),
+                lastName: $("#lname").val(),
+                eMail: $("#email").val(),
+                age: $("#age").val(),
+
+            };
+
+            //sends a post request to the URL described. Arguments in order: URL, data, Callbak, Function.
+            $.post("http://localhost:3000/updateData", data, (dataFromServer) => {
+                console.log("The server has responded.");
+                console.log(dataFromServer);
+            });
+
+        });
+              
+          });
+     </script>
+</body>
+</html>
