@@ -32,7 +32,9 @@ for (let i = 0; i < dataArray.length; i++) {
     if (pass == true) {
 //console.log("The line entry " + i + " is from the year 2018!");
 total++;
+// Grab current line and add it to JSON object array.
 json2018Data.data.push(dataArray[i]);
+
 //If we encounter an issue, tell us about it.
    } else if ( pass == 1) {
        console.log("The line " + (i + 1) + " has issues! please check.");
@@ -44,8 +46,10 @@ json2018Data.data.push(dataArray[i]);
 //Finally console log the total amount of entries that match 2018.
 //console.log(json2018Data);
 
+//convert JSON object into JSON string.
 let jsonString = JSON.stringify(json2018Data);
 
+//Write JSON string to file.
 fs.writeFileSync("2018entries.json", jsonString, "utf8");
 console.log("File was writen!");
 
