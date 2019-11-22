@@ -1,14 +1,14 @@
 {
-  "name": "vehicles",
+  "name": "firstserver",
   "version": "1.0.0",
-  "description": "\"playing with classes while using vehicles\"",
+  "description": "A basic express server to practice on",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "\"Bradxy Cheneque\"",
+  "author": "Bradxy",
   "license": "ISC",
   "dependencies": {
-    "lodash": "^4.17.15"
+    "express": "^4.17.1"
   }
 }
