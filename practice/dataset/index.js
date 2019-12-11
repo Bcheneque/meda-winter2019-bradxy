@@ -50,7 +50,7 @@ json2018Data.data.push(dataArray[i]);
 let jsonString = JSON.stringify(json2018Data);
 
 //Write JSON string to file.
-fs.writeFileSync("2018entries.json", jsonString, "utf8");
+fs.writeFileSync("2017entries.json", jsonString, "utf8");
 console.log("File was writen!");
 
 //console.log(dataAarray[22]);

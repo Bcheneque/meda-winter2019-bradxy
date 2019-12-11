@@ -1,5 +1,8 @@
 //include into our code, the fs package(built-in).
 const fs = require("fs");
+
+//Use the mongoose package so we can talk to MongoDB Atlas.
+const mongoose = require("mongoose");
 //includes into our code, the express.js, provided by NPM.
 const express = require("express");
 //includes into our code Body Parser, comes with Express.js
@@ -12,6 +15,44 @@ const http = require("http").Server(app);
 const port = 3000;
 //we pass the port variable to the listen function for the HTTP server.
 http.listen(port);
+
+//URL to access our MongoDB
+const dbConnect = "mongodb+srv://practiceUser:Rammstein6@clusterpractice-hv84h.mongodb.net/commentsproject?retryWrites=true&w=majority";
+
+//Additional options when connecting to MongoDB
+const options = {
+  useNewUrlParser: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true,
+};
+
+//Actually connect to MongoDB Atlas.
+mongoose.connect(dbConnect, options, (error) => {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("Successfully connected to MongoDB Atlas!");
+  }
+});
+
+//link up MongoDB errors with the console, and link up the definition of Promises to Mongoose.
+let db = mongoose.connection;
+db.on("error", console.error.bind(console, "MongoDB error"));
+mongoose.Promise = global.Promise;
+
+//Building a MongoDB Schema.
+let Schema = mongoose.Schema;
+let commentsSchema = new Schema({
+  message: String,
+  firstName: String,
+  lastName: String,
+  email: String,
+  age: Number,
+  timeStamp: Date,
+});
+
+// Create a model for the comments collection using the comments Schema
+let commentsModel = new mongoose.model("comments", commentsSchema);
 
 //signifying the Developer that Express.js is now running.
 console.log("Express server running on port" + port);
@@ -39,24 +80,37 @@ app.post("/submitComment",(request, response) => {
     let objectFromRequest = request.body;
 
     console.log(objectFromRequest);
-      //response.sendStatus(200);
-    //let text = objectFromRequest.message;
-   //console.log("We received a request for updateData" + text);
+
+      response.sendStatus(200);
+    let text = objectFromRequest.message;
+   console.log("We received a request for updateData" + text);
+
+   objectFromRequest.age = parseInt(objectFromRequest.age);
+   objectFromRequest.timeStamp =new Date();
+
+   let newComment =new commentsModel(objectFromRequest);
+    newComment.save((error) => {
+      if(error) {
+        console.log(error);
+      } else {
+        console.log("Save a new comments to the database!");
+      }
+    });
     
 
 //If the file exists do ...
   if (fs.existsSync(filename)) {
 
     //... read the file and store the contents in the variable comments...
-     let comments = fs.readFileSync(filename, "utf8");
+    let comments = fs.readFileSync(filename, "utf8");
     // ...Parse the JSON and reuse the same comments variable...
-      comments = JSON.parse(comments);
+     comments = JSON.parse(comments);
 //...add the new objectFromRequest object to the array inside of the comments object...
       comments.commentsArray.push(objectFromRequest);
 //... then convert comments back into a string as JSON.
       comments = JSON.stringify(comments);
 //... finally save the JSON string to a file.
-      fs.writeFileSync(filename, comments, "utf8");
+     fs.writeFileSync(filename, comments, "utf8");
       console.log("New Comment Saved to Hard Drive!");
   
     } else {
@@ -68,8 +122,8 @@ app.post("/submitComment",(request, response) => {
         //..Convert it actual JSON string...
         comments = JSON.stringify(comments);
         //...Finally save JSON string to new file.
-       fs.writeFileSync(filename, comments, "utf8");
-       console.log("Note: No Save File detected, creating New File. New Comment saved to Hard Drive")
+      fs.writeFileSync(filename, comments, "utf8");
+      console.log("Note: No Save File detected, creating New File. New Comment saved to Hard Drive")
 
     }
 
@@ -85,17 +139,32 @@ app.post("/submitComment",(request, response) => {
 //A second HTTP Post Handler called /loadComments
 app.post("/loadComments", (request, response)=> {
 
+// Read all the comments from MongoDB Atlas.
+commentsModel.find({}, (error, results) => {
+   if (error) {
+   // if error, tell me about it.  
+     console.log(error);
+   } else {
+    // Build an object that the front-end expects... 
+     let objectToSend = {
+       commentsArray: results
+     }
+    //... and send it. 
+     response.send(results);
+   }
+});
+
      //Check if the JSON file exists...
      if(fs.existsSync(filename)) {
 
          //...if it exists then read it ...
-         let comments = fs.readFileSync(filename, "utf8");
+       let comments = fs.readFileSync(filename, "utf8");
          //... and convert to a JavaScript Object...
          comments = JSON.parse(comments);
      //...finally send it to the requester   
-         response.send(comments);
-     } else {
+        response.send(comments);
+   } else {
          //... if it doesn't exist, then send an error 500 to the requester.
-        response.sendStatus(500);
-     }
-});
+     response.sendStatus(500);
+    }
+  });

@@ -13,7 +13,7 @@ class EvictionNotice {
 }
 
 // Read our filtered dataset.
-let evictionDataMasterString = fs.readFileSync("2018entries.json", "utf8");
+let evictionDataMasterString = fs.readFileSync("2017entries.json", "utf8");
 
 // Convert the filtered dataset to a living JS object.
 // Inside evictionDataMasterObject, there is a key called "data" holding an array of strings.
